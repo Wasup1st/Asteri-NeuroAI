@@ -131,7 +131,7 @@
                         </div>
                         <div class="space-y-4">
                             <div class="space-y-2">
-                                <div class="flex justify-between text-sm text-slate-300"><span>Skull Stripping Pipeline</span><span class="font-mono text-green-400">Stable v1.0</span></div>
+                                <div class="flex justify-between text-sm text-slate-300"><span>Skull Stripping Pipeline</span><span class="font-mono text-green-400">Stable v2.1</span></div>
                                 <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-400 rounded-full" style="width: 100%;"></div></div>
                             </div>
                             <div class="space-y-2">
@@ -222,12 +222,15 @@
                 <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-cyan-500/10 blur-3xl animate-pulse"></div>
                 
                 <div class="relative z-10">
-                    <div class="flex items-center justify-between mb-8 pb-6 border-b border-slate-700">
-                        <div class="flex items-center gap-3">
-                            <i data-lucide="alert-triangle" class="h-5 w-5 text-yellow-400"></i>
-                            <span class="text-white font-medium">Diagnostic Module (INTERNAL RESEARCH DEMO ONLY)</span>
+                    <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-slate-700 gap-4">
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="alert-triangle" class="h-5 w-5 text-yellow-400 mt-0.5"></i>
+                            <div class="flex flex-col">
+                                <span class="text-white font-medium">Diagnostic Module (INTERNAL RESEARCH DEMO ONLY)</span>
+                                <span class="text-xs text-slate-400 mt-1">Disclaimer: This is currently a simulated demo to illustrate how the real pipeline will look and function.</span>
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 self-start md:self-auto">
                            
                             <!-- File Upload Picker -->
                             <label for="mri-upload" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap block" id="btn-start-demo-label">
