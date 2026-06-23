@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asteri Neuro-AI</title>
+    <title>Asteri Neuro-AI: 3D-CNN Dementia Diagnostics</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,15 +15,19 @@
       html { scroll-behavior: smooth; }
       ::selection { background-color: #6366f1; color: white; }
       
-      /* Smooth transitions for FAQ and Hero */
+      /* Transitions */
       .faq-answer { transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out; }
       .fade-in { animation: fadeIn 0.5s ease-in-out; }
       @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
       
-      /* Demo Animations */
+      /* Demo/Scan Animations */
       .audio-bar { transition: height 0.1s ease; }
-      .analyzing-bounce { animation: bounce 0.5s infinite alternate; }
-      @keyframes bounce { from { height: 20%; } to { height: 100%; } }
+      
+      /* COOL SCAN THINGY: Laser scanner lines */
+      .scanning-laser {
+        background: linear-gradient(0deg, rgba(34,211,238,0) 0%, rgba(34,211,238,0.7) 50%, rgba(34,211,238,0) 100%);
+        box-shadow: 0 0 15px rgba(34,211,238,0.5);
+      }
     </style>
 </head>
 <body class="bg-slate-50 font-sans text-slate-900 selection:bg-indigo-500 selection:text-white">
@@ -39,8 +43,8 @@
                 <div class="hidden md:flex items-center space-x-8" id="desktop-links">
                     <a href="#mission" class="nav-link text-sm font-medium text-slate-200 hover:text-indigo-500 transition-colors">Mission</a>
                     <a href="#demo" class="nav-link text-sm font-medium text-slate-200 hover:text-indigo-500 transition-colors">Demo</a>
-                    <a href="#journey" class="nav-link text-sm font-medium text-slate-200 hover:text-indigo-500 transition-colors">Journey</a>
-                    <a href="#team" class="nav-link text-sm font-medium text-slate-200 hover:text-indigo-500 transition-colors">Team</a>
+                    <a href="#explainable" class="nav-link text-sm font-medium text-slate-200 hover:text-indigo-500 transition-colors">Trust</a>
+                    <a href="#roadmap" class="nav-link text-sm font-medium text-slate-200 hover:text-indigo-500 transition-colors">Roadmap</a>
                     <a href="#faq" class="nav-link text-sm font-medium text-slate-200 hover:text-indigo-500 transition-colors">FAQ</a>
                     <a href="#waitlist" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-full text-sm font-semibold transition-all shadow-md hover:shadow-lg">Join Waitlist</a>
                 </div>
@@ -58,8 +62,8 @@
             <div class="px-4 pt-2 pb-6 space-y-1">
                 <a href="#mission" class="mobile-nav-link block px-3 py-3 text-base font-medium text-slate-700 hover:text-indigo-600 hover:bg-slate-50 rounded-md">Mission</a>
                 <a href="#demo" class="mobile-nav-link block px-3 py-3 text-base font-medium text-slate-700 hover:text-indigo-600 hover:bg-slate-50 rounded-md">Demo</a>
-                <a href="#journey" class="mobile-nav-link block px-3 py-3 text-base font-medium text-slate-700 hover:text-indigo-600 hover:bg-slate-50 rounded-md">Journey</a>
-                <a href="#team" class="mobile-nav-link block px-3 py-3 text-base font-medium text-slate-700 hover:text-indigo-600 hover:bg-slate-50 rounded-md">Team</a>
+                <a href="#explainable" class="mobile-nav-link block px-3 py-3 text-base font-medium text-slate-700 hover:text-indigo-600 hover:bg-slate-50 rounded-md">Trust</a>
+                <a href="#roadmap" class="mobile-nav-link block px-3 py-3 text-base font-medium text-slate-700 hover:text-indigo-600 hover:bg-slate-50 rounded-md">Roadmap</a>
                 <a href="#faq" class="mobile-nav-link block px-3 py-3 text-base font-medium text-slate-700 hover:text-indigo-600 hover:bg-slate-50 rounded-md">FAQ</a>
                 <div class="pt-4">
                     <a href="#waitlist" class="mobile-nav-link block w-full text-center bg-indigo-600 text-white px-5 py-3 rounded-xl text-base font-semibold">Join Waitlist</a>
@@ -76,48 +80,22 @@
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center">
             <div class="w-full lg:w-1/2 lg:pr-12 text-center lg:text-left z-10">
                 
-                <!-- View Toggle -->
-                <div class="inline-flex bg-slate-800/50 backdrop-blur-md p-1 rounded-full mb-8 border border-slate-700/50">
-                    <button id="btn-patient" class="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all bg-indigo-500 text-white shadow-md">
-                        <i data-lucide="user" class="h-4 w-4"></i> For Patients
-                    </button>
-                    <button id="btn-clinic" class="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all text-slate-400 hover:text-slate-200">
-                        <i data-lucide="building-2" class="h-4 w-4"></i> For Clinics
-                    </button>
-                </div>
-
-                <!-- Patient View -->
-                <div id="patient-view" class="fade-in block">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-sm font-medium mb-6">
-                        <span class="flex h-2 w-2 rounded-full bg-indigo-400 animate-pulse"></span> Pioneering Neuro-AI
-                    </div>
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6 leading-tight">
-                        Detect Dementia <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Years Earlier.</span>
-                    </h1>
-                    <p class="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
-                        Asteri Neuro-AI analyzes subtle cognitive, speech, and motor patterns to identify the onset of dementia long before clinical symptoms emerge, enabling life-changing early interventions.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <a href="#demo" class="bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(99,102,241,0.4)]">
-                            Try Interactive Demo <i data-lucide="play-square" class="h-5 w-5"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Clinic View -->
-                <div id="clinic-view" class="fade-in hidden">
+                <div id="clinic-view" class="fade-in block">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-sm font-medium mb-6">
-                        <span class="flex h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></span> Seamless EHR Integration
+                        <span class="flex h-2 w-2 rounded-full bg-cyan-400 animate-pulse"></span> Seamless EHR Integration (v2.1)
                     </div>
                     <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6 leading-tight">
-                        Empower Your Practice with <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Predictive AI.</span>
+                        Empower Your Practice with <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Predictive 3D-CNN.</span>
                     </h1>
                     <p class="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
-                        Equip your clinical team with advanced digital biomarker tracking. Asteri Neuro integrates into existing workflows to flag at-risk patients automatically, improving outcomes and expanding reimbursable care.
+                        Equip your clinical team with volumetric MRI analysis. Asteri Neuro-AI integrates into existing workflows to automatically flag at-risk patients, bypassing standard radiology limits with 98.4% diagnostic confidence.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                        <a href="#whitepaper" class="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(34,211,238,0.4)]">
-                            Download Whitepaper <i data-lucide="file-text" class="h-5 w-5"></i>
+                        <a href="#demo" class="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(34,211,238,0.4)]">
+                            Interactive Pipeline Demo <i data-lucide="play-square" class="h-5 w-5"></i>
+                        </a>
+                        <a href="#explainable" class="bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all flex items-center justify-center gap-2">
+                            Transparency (XAI) <i data-lucide="shield-check" class="h-5 w-5"></i>
                         </a>
                     </div>
                 </div>
@@ -130,25 +108,25 @@
                     <div class="relative h-full w-full rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-8 flex flex-col justify-between shadow-2xl">
                         <div class="flex justify-between items-start">
                             <div class="bg-white/10 p-3 rounded-xl border border-white/10">
-                                <i data-lucide="network" class="h-8 w-8 text-cyan-400"></i>
+                                <i data-lucide="database" class="h-8 w-8 text-cyan-400"></i>
                             </div>
                             <div class="text-right">
-                                <p class="text-slate-400 text-sm">Real-time Analysis</p>
-                                <p class="text-green-400 font-mono font-semibold">98.4% Accuracy</p>
+                                <p class="text-slate-400 text-sm">Real-time Pipeline</p>
+                                <p class="text-green-400 font-mono font-semibold">ADNI Validated Datasets</p>
                             </div>
                         </div>
                         <div class="space-y-4">
                             <div class="space-y-2">
-                                <div class="flex justify-between text-sm text-slate-300"><span>Speech Prosody</span><span class="font-mono">87%</span></div>
-                                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-400 rounded-full" style="width: 87%;"></div></div>
+                                <div class="flex justify-between text-sm text-slate-300"><span>Skull Stripping Pipeline</span><span class="font-mono text-green-400">Stable v1.0</span></div>
+                                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-400 rounded-full" style="width: 100%;"></div></div>
                             </div>
                             <div class="space-y-2">
-                                <div class="flex justify-between text-sm text-slate-300"><span>Semantic Memory</span><span class="font-mono">92%</span></div>
-                                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-indigo-400 rounded-full" style="width: 92%;"></div></div>
+                                <div class="flex justify-between text-sm text-slate-300"><span>3D-CNN Architecture</span><span class="font-mono text-cyan-400">Active</span></div>
+                                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-indigo-400 rounded-full" style="width: 100%;"></div></div>
                             </div>
                             <div class="space-y-2">
-                                <div class="flex justify-between text-sm text-slate-300"><span>Motor Micro-tremors</span><span class="font-mono">95%</span></div>
-                                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-400 rounded-full" style="width: 95%;"></div></div>
+                                <div class="flex justify-between text-sm text-slate-300"><span>Saliency Map Generation (XAI)</span><span class="font-mono text-purple-400">Active</span></div>
+                                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-400 rounded-full" style="width: 100%;"></div></div>
                             </div>
                         </div>
                     </div>
@@ -169,165 +147,142 @@
         </div>
     </div>
 
-    <!-- Mission Statement -->
-    <section class="py-20 bg-indigo-50" id="mission">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <i data-lucide="shield-check" class="h-12 w-12 text-indigo-600 mx-auto mb-6"></i>
-            <h2 class="text-3xl md:text-4xl font-serif font-bold text-slate-900 mb-6 leading-tight">
-                "To illuminate the path to cognitive longevity by making early dementia detection accessible, accurate, and actionable for everyone."
-            </h2>
-            <div class="w-24 h-1 bg-indigo-600 mx-auto rounded-full"></div>
+    <!-- Explainable AI Section (XAI Pivot) -->
+    <section class="py-24 bg-slate-50" id="explainable">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-20">
+                <i data-lucide="shield-check" class="h-12 w-12 text-indigo-600 mx-auto mb-6"></i>
+                <h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6">Explainable AI: Trust the Diagnosis, Not Just the Score.</h3>
+                <p class="text-lg text-slate-600">Doctors hate 'black box' AI. To integrate with human workflows, Asteri Neuro-AI (v2.1) shows its work by generating real-time Saliency Maps over internal brain tissue.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="bg-slate-900 p-8 rounded-3xl shadow-xl relative aspect-[4/3] overflow-hidden group">
+                    <!-- Explainable AI Background Image -->
+                    <img src="image_191bf8.png" alt="Generated Saliency Map Visualization" class="absolute inset-0 w-full h-full object-cover object-center opacity-70 group-hover:scale-105 transition-transform duration-700" onerror="this.style.display='none'" />
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+                    
+                    <div class="relative z-10 flex flex-col h-full justify-between">
+                        <div class="bg-slate-800/80 p-4 rounded-xl border border-white/10 w-fit backdrop-blur-md">
+                            <span class="text-cyan-400 font-mono font-bold">Asteri XAI Report v2.1</span>
+                        </div>
+                        
+                        <div class="bg-indigo-950/80 p-6 rounded-2xl border border-indigo-700 backdrop-blur-md self-end max-w-xs transition-opacity group-hover:opacity-100 opacity-90 shadow-2xl">
+                            <h5 class="text-white font-semibold flex items-center gap-2"><i data-lucide="target" class="h-4 w-4 text-cyan-400"></i> Ventricle Targeting</h5>
+                            <p class="text-indigo-200 text-sm mt-2 leading-relaxed">Saliency maps confirm the model focuses on gray/white matter and ventricles, ignoring the high-contrast skull.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-8">
+                    <div class="flex items-start gap-4 p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-all group">
+                        <i data-lucide="skull" class="h-10 w-10 text-cyan-600 flex-shrink-0 mt-1"></i>
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900 mb-2">Skull Stripping Pipeline</h4>
+                            <p class="text-slate-600 leading-relaxed">Our preprocessor uses Connected Component Analysis to remove the skull and isolated background noise. This forces the model to analyze internal brain tissue and structures exclusively.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-all group">
+                        <i data-lucide="map-pin" class="h-10 w-10 text-indigo-600 flex-shrink-0 mt-1"></i>
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900 mb-2">Saliency Map Generation</h4>
+                            <p class="text-slate-600 leading-relaxed">We provide a transparent visual report (heatmaps) highlighting the specific voxels within the 3D MRI volume that contributed most significantly to the final diagnostic score.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <!-- Interactive Demo -->
+    <!-- Pipeline Simulator Demo Section -->
     <section class="py-24 bg-white" id="demo">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-indigo-600 font-semibold tracking-wide uppercase text-sm mb-3">Live Analysis Simulator</h2>
-                <h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6">See Asteri Neuro-AI in Action</h3>
-                <p class="text-lg text-slate-600">Experience how our algorithms process multi-modal data in real-time to generate predictive cognitive risk scores.</p>
+                <h2 class="text-cyan-600 font-semibold tracking-wide uppercase text-sm mb-3">Asteri Pipeline Simulator (v2.1)</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6">Experience 3D-CNN Volumetric Scanning</h3>
+                <p class="text-lg text-slate-600">Simulate a complex MRI analysis. Upload a file, and watch the pipeline execute its diagnostic steps, generating a final risk score and interpretation.</p>
             </div>
 
-            <div class="max-w-3xl mx-auto bg-slate-900 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-indigo-500/20 blur-3xl"></div>
+            <div class="max-w-4xl mx-auto bg-slate-900 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-cyan-500/10 blur-3xl animate-pulse"></div>
                 
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-8 pb-6 border-b border-slate-700">
                         <div class="flex items-center gap-3">
-                            <div id="demo-status-indicator" class="h-3 w-3 rounded-full bg-slate-500"></div>
-                            <span class="text-white font-medium">Diagnostic Module V2.1</span>
+                            <i data-lucide="alert-triangle" class="h-5 w-5 text-yellow-400"></i>
+                            <span class="text-white font-medium">Diagnostic Module (INTERNAL RESEARCH DEMO ONLY)</span>
                         </div>
-                        <button id="btn-start-demo" class="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all block">Start Analysis</button>
-                        <button id="btn-reset-demo" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all hidden">Reset</button>
+                        <div class="flex items-center gap-2">
+                           
+                            <!-- File Upload Picker -->
+                            <label for="mri-upload" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap block" id="btn-start-demo-label">
+                                <i data-lucide="upload" class="h-4 w-4"></i> Upload MRI (NIfTI Demo)
+                            </label>
+                            <input type="file" id="mri-upload" class="hidden" accept=".nii,.nii.gz,image/*">
+                            
+                            <button id="btn-reset-demo" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all hidden">Reset</button>
+                        </div>
                     </div>
 
-                    <div class="space-y-8">
-                        <div>
-                            <div class="flex justify-between text-sm text-slate-300 mb-2">
-                                <span>Acoustic Speech Analysis</span>
-                                <span id="demo-audio-status" class="">Waiting...</span>
-                            </div>
-                            <div id="audio-visualizer" class="h-16 w-full bg-slate-800 rounded-xl flex items-center justify-center gap-1 px-4 overflow-hidden">
-                                <!-- Bars inserted by JS -->
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <div class="flex justify-between text-sm text-slate-300 mb-2">
-                                    <span>Semantic Memory Parsing</span>
-                                    <span id="progress-val-1">0%</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start relative">
+                        
+                        <!-- SIMULATION VISUAL AREA -->
+                        <div class="w-full h-full relative group">
+                            <!-- COOL SCAN THINGY Container -->
+                            <div id="scanner-wrapper" class="relative w-full aspect-square border-2 border-slate-700 rounded-3xl overflow-hidden bg-slate-800">
+                                <!-- Uploaded Scan Graphic (Appears halfway through demo) -->
+                                <img id="uploaded-brain-scan" src="" alt="Scan Visualization" class="hidden absolute inset-0 w-full h-full object-cover transition-opacity duration-300" onerror="this.style.display='none'" />
+                                
+                                <div class="absolute inset-0 flex items-center justify-center" id="demo-placeholder-icon">
+                                    <i data-lucide="brain" class="h-16 w-16 text-slate-600"></i>
                                 </div>
-                                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                                    <div id="progress-bar-1" class="h-full bg-cyan-400 transition-all duration-75" style="width: 0%;"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-sm text-slate-300 mb-2">
-                                    <span>Motor Micro-tremor Detection</span>
-                                    <span id="progress-val-2">0%</span>
-                                </div>
-                                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                                    <div id="progress-bar-2" class="h-full bg-purple-400 transition-all duration-75" style="width: 0%;"></div>
-                                </div>
+                                
+                                <!-- Cool Scan Laser Thingy (Moves during scan) -->
+                                <div id="scan-laser" class="scanning-laser absolute left-0 right-0 h-4 hidden"></div>
                             </div>
                         </div>
 
-                        <div id="demo-results" class="mt-8 bg-indigo-900/50 border border-indigo-500/30 rounded-xl p-6 hidden fade-in">
-                            <div class="flex items-start gap-4">
-                                <i data-lucide="check-circle-2" class="h-8 w-8 text-green-400 flex-shrink-0"></i>
+                        <!-- SIMULATION REPORT AREA -->
+                        <div class="space-y-6">
+                            <div class="flex justify-between items-center bg-slate-800 p-4 rounded-xl border border-slate-700">
                                 <div>
-                                    <h4 class="text-white font-semibold text-lg">Analysis Complete</h4>
-                                    <p class="text-indigo-200 mt-1">No significant digital biomarkers detected. Cognitive trajectory is within normal healthy ranges.</p>
-                                    <div class="mt-4 inline-block bg-slate-800 rounded-lg p-3">
-                                        <span class="text-sm text-slate-400 block">Risk Confidence Score</span>
-                                        <span class="text-2xl font-mono text-white font-bold">Low Risk</span>
+                                    <p class="text-sm text-slate-400">File Reference</p>
+                                    <p id="demo-file-name" class="font-mono text-white text-lg">No File Selected</p>
+                                </div>
+                                <span class="text-green-400 font-mono text-sm hidden" id="demo-data-status">Simulated 128³ Block</span>
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm text-slate-300">
+                                    <span>Pipeline execution Progress</span>
+                                    <span id="progress-val-main">0%</span>
+                                </div>
+                                <div class="h-3 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                                    <div id="progress-bar-main" class="h-full bg-indigo-500 transition-all duration-75" style="width: 0%;"></div>
+                                </div>
+                            </div>
+
+                            <div id="demo-results-report" class="mt-8 bg-slate-800 border border-slate-700 rounded-xl p-6 hidden fade-in">
+                                <div class="flex items-start gap-4 mb-4">
+                                    <i data-lucide="info" class="h-8 w-8 text-cyan-400 flex-shrink-0" id="result-icon-type"></i>
+                                    <div>
+                                        <h4 class="text-white font-semibold text-xl">Clinical Report Summary</h4>
+                                        <p id="demo-diagnosis-text" class="text-slate-300 mt-2 leading-relaxed">No data validated.</p>
+                                        <div class="mt-4 inline-block bg-slate-900 rounded-lg p-3 border border-slate-700">
+                                            <span class="text-sm text-slate-400 block">Risk Confidence Score</span>
+                                            <span id="demo-risk-score" class="text-2xl font-mono text-white font-bold">---</span>
+                                        </div>
                                     </div>
                                 </div>
+                                <!-- Saliency Map Results Graphic -->
+                                <img id="demo-saliency-result-img" src="" alt="Fake Generated Saliency Map" class="w-full h-auto rounded-lg mt-4 border border-slate-700 group-hover:scale-105 transition-transform duration-700" onerror="this.style.display='none'" />
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Patient Journey -->
-    <section class="py-24 bg-slate-50 border-t border-slate-200" id="journey">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-indigo-600 font-semibold tracking-wide uppercase text-sm mb-3">The Patient Journey</h2>
-                <h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6">Changing the Trajectory of Care</h3>
-                <p class="text-lg text-slate-600">By shifting detection from structural brain damage to early functional changes, we give patients the gift of time.</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-12">
-                <!-- Traditional -->
-                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm opacity-70">
-                    <h4 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                        <i data-lucide="minus" class="text-red-500 h-5 w-5"></i> Traditional Pathway
-                    </h4>
-                    <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent">
-                        <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                            <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-200 text-slate-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">1</div>
-                            <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-slate-200 bg-slate-50">
-                                <p class="font-bold text-slate-700">Symptom Onset</p>
-                                <p class="text-sm text-slate-500">Noticeable memory loss occurs.</p>
-                            </div>
-                        </div>
-                        <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                            <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-200 text-slate-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
-                                <i data-lucide="file-text" class="h-4 w-4"></i>
-                            </div>
-                            <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-slate-200 bg-slate-50">
-                                <p class="font-bold text-slate-700">MRI / PET Scan</p>
-                                <p class="text-sm text-slate-500">Expensive scans reveal brain shrinkage.</p>
-                            </div>
-                        </div>
-                        <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                            <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-red-100 text-red-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
-                                <i data-lucide="brain" class="h-4 w-4"></i>
-                            </div>
-                            <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-red-50 bg-red-50/50">
-                                <p class="font-bold text-red-700">Late Diagnosis</p>
-                                <p class="text-sm text-red-600">Damage is irreversible. Options are limited.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Asteri -->
-                <div class="bg-white p-8 rounded-3xl border-2 border-indigo-500 shadow-xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">The Asteri Advantage</div>
-                    <h4 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                        <i data-lucide="plus" class="text-indigo-600 h-5 w-5"></i> Asteri Pathway
-                    </h4>
-                    <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-indigo-300 before:to-transparent">
-                        <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                            <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-indigo-100 text-indigo-600 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">1</div>
-                            <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-indigo-100 bg-indigo-50">
-                                <p class="font-bold text-indigo-900">5-Min Digital Test</p>
-                                <p class="text-sm text-indigo-700">Routine, non-invasive checkup at home or clinic.</p>
-                            </div>
-                        </div>
-                        <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                            <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-indigo-100 text-indigo-600 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
-                                <i data-lucide="activity" class="h-4 w-4"></i>
-                            </div>
-                            <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-indigo-100 bg-indigo-50">
-                                <p class="font-bold text-indigo-900">Early Detection</p>
-                                <p class="text-sm text-indigo-700">AI flags micro-changes 5-10 years early.</p>
-                            </div>
-                        </div>
-                        <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                            <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-green-100 text-green-600 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2">
-                                <i data-lucide="heart-pulse" class="h-4 w-4"></i>
-                            </div>
-                            <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-green-100 bg-green-50">
-                                <p class="font-bold text-green-800">Proactive Care</p>
-                                <p class="text-sm text-green-700">Lifestyle changes, trials, and preserved cognition.</p>
-                            </div>
+                        
+                        <!-- OVERLAY SCANNING INDICATOR -->
+                        <div id="demo-status-text" class="absolute inset-0 bg-slate-900/90 flex items-center justify-center hidden rounded-3xl">
+                            <span class="text-cyan-400 text-lg font-mono animate-pulse">Initializing Scan...</span>
                         </div>
                     </div>
                 </div>
@@ -336,14 +291,14 @@
     </section>
 
     <!-- Team Section -->
-    <section class="py-24 bg-white" id="team">
+    <section class="py-24 bg-slate-50 border-t border-slate-200" id="team">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto mb-16">
                 <h2 class="text-indigo-600 font-semibold tracking-wide uppercase text-sm mb-3">Leadership</h2>
-                <h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6">The Brain Behind Asteri</h3>
+                <h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-6">Founder & CEO</h3>
             </div>
 
-            <div class="max-w-4xl mx-auto bg-slate-50 rounded-3xl p-8 md:p-12 border border-slate-100 shadow-sm flex flex-col md:flex-row items-center gap-10">
+            <div class="max-w-3xl mx-auto bg-white rounded-3xl p-8 md:p-12 border border-slate-100 shadow-sm flex flex-col md:flex-row items-center gap-10">
                 <div class="w-48 h-48 md:w-64 md:h-64 flex-shrink-0 relative">
                     <img src="image_98c457.jpg" alt="Maanvik Uppal - Founder & CEO" class="w-full h-full object-cover object-top rounded-2xl shadow-lg relative z-10" />
                     <div class="absolute inset-0 bg-indigo-500 rounded-2xl transform translate-x-3 translate-y-3 -z-10"></div>
@@ -352,7 +307,7 @@
                     <h4 class="text-2xl font-bold text-slate-900 mb-1">Maanvik Uppal</h4>
                     <p class="text-indigo-600 font-medium mb-4">Founder & CEO</p>
                     <p class="text-slate-600 leading-relaxed mb-6">
-                        Driven by a passion for intersectional technology and medicine, Maanvik built Asteri Neuro-AI to solve one of healthcare's greatest challenges: time. By leveraging cutting-edge machine learning and vast longitudinal datasets, the mission is to shift the paradigm of dementia care from reactive treatment to proactive preservation.
+                        Driven by a passion for intersectional technology and medicine, Maanvik Uppal is an active medical researcher and student. Driven by Alzheimer's Disease (AD), Maanvik built Asteri Neuro-AI (v2.1) to focus on using 3D Convolutional Neural Networks (3D-CNNs) to revolutionize early dementia detection via volumetric MRI analysis.
                     </p>
                     <div class="flex gap-4">
                         <a href="https://www.linkedin.com/in/maanvik-uppal-873375239" target="_blank" class="text-slate-400 hover:text-indigo-600 transition-colors font-medium">LinkedIn</a>
@@ -364,49 +319,53 @@
         </div>
     </section>
 
-    <!-- Security Section -->
-    <section class="py-20 bg-slate-900 border-t border-slate-800" id="security">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <i data-lucide="shield-check" class="h-10 w-10 text-indigo-500 mx-auto mb-4"></i>
-                <h2 class="text-indigo-400 font-semibold tracking-wide uppercase text-sm mb-3">Enterprise-Grade Security</h2>
-                <h3 class="text-3xl md:text-4xl font-bold text-white mb-6">Patient Privacy is Our Foundation</h3>
-                <p class="text-lg text-slate-400">We process highly sensitive medical and biometric data. Our infrastructure is built from the ground up to exceed international compliance standards.</p>
+    <!-- FAQ Section -->
+    <section class="py-24 bg-white" id="faq">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Frequently Asked Questions</h2>
+                <p class="text-lg text-slate-600">Everything you need to know about the pipeline.</p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-slate-800/50 rounded-2xl p-8 border border-slate-700 hover:bg-slate-800 transition-colors">
-                    <div class="bg-slate-900/50 w-16 h-16 rounded-xl flex items-center justify-center mb-6 border border-slate-700">
-                        <i data-lucide="shield-check" class="h-8 w-8 text-green-400"></i>
+            <div class="space-y-4">
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-sm faq-container">
+                    <button class="faq-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-slate-900">How is Asteri Neuro v2.1 fundamentally different from standard radiology?</span>
+                        <i data-lucide="plus" class="faq-icon h-5 w-5 text-slate-400 flex-shrink-0 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer max-h-0 overflow-hidden px-6 text-slate-600 leading-relaxed">
+                        <p class="pb-5">Standard radiology relies on human observation of flat, 2D MRI slices. Asteri Neuro-AI analyzes the complete 3D volume (voxel data). This allows the 3D-CNN to process subtle, micro-structural density patterns across internal brain structures (gray and white matter) that the human eye cannot consistently detect, enabling detection years earlier.</p>
                     </div>
-                    <h4 class="text-xl font-bold text-white mb-3">HIPAA & GDPR Compliant</h4>
-                    <p class="text-slate-400 leading-relaxed">Our systems are fully compliant with the Health Insurance Portability and Accountability Act, ensuring strict handling of all Protected Health Information (PHI).</p>
                 </div>
-                <div class="bg-slate-800/50 rounded-2xl p-8 border border-slate-700 hover:bg-slate-800 transition-colors">
-                    <div class="bg-slate-900/50 w-16 h-16 rounded-xl flex items-center justify-center mb-6 border border-slate-700">
-                        <i data-lucide="lock" class="h-8 w-8 text-indigo-400"></i>
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-sm faq-container">
+                    <button class="faq-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-slate-900">Does the pipeline require special MRI sequences?</span>
+                        <i data-lucide="plus" class="faq-icon h-5 w-5 text-slate-400 flex-shrink-0 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer max-h-0 overflow-hidden px-6 text-slate-600 leading-relaxed">
+                        <p class="pb-5">No. Asteri Neuro (v2.1) is designed to run on standard T1-weighted structural MRI scans (the most common MRI sequence used in clinical neurology). The preprocessor converts the raw DICOM or NIfTI data into uniform, 128x128x128 blocks for consistent model analysis.</p>
                     </div>
-                    <h4 class="text-xl font-bold text-white mb-3">End-to-End Encryption</h4>
-                    <p class="text-slate-400 leading-relaxed">All audio, motor, and cognitive data is encrypted using AES-256 in transit and at rest. Only authorized clinical providers hold the decryption keys.</p>
                 </div>
-                <div class="bg-slate-800/50 rounded-2xl p-8 border border-slate-700 hover:bg-slate-800 transition-colors">
-                    <div class="bg-slate-900/50 w-16 h-16 rounded-xl flex items-center justify-center mb-6 border border-slate-700">
-                        <i data-lucide="database" class="h-8 w-8 text-cyan-400"></i>
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-sm faq-container">
+                    <button class="faq-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-slate-900">Is the diagnostic output considered valid medical evidence?</span>
+                        <i data-lucide="plus" class="faq-icon h-5 w-5 text-slate-400 flex-shrink-0 transition-transform"></i>
+                    </button>
+                    <div class="faq-answer max-h-0 overflow-hidden px-6 text-slate-600 leading-relaxed">
+                        <p class="pb-5">No, not yet. Asteri Neuro v2.1 is actively in Phase 2 of medical research. The system is designed to provide high-confidence *screening probability reports*, which must be reviewed by qualified clinicians and neurologists. The generated Saliency Map ensures the clinician understands *why* the AI flagged a patient, assisting rather than replacing human judgment.</p>
                     </div>
-                    <h4 class="text-xl font-bold text-white mb-3">Anonymized Processing</h4>
-                    <p class="text-slate-400 leading-relaxed">Before any data reaches our neural networks, all Personally Identifiable Information (PII) is completely stripped and tokenized.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Whitepaper Section -->
-    <section class="py-24 bg-white" id="whitepaper">
+    <!-- Newsletter/Whitepaper PDF Form Section -->
+    <section class="py-24 bg-slate-100" id="whitepaper">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-indigo-50 rounded-3xl p-8 md:p-12 border border-indigo-100 flex flex-col md:flex-row items-center gap-12 shadow-sm">
+            <div class="bg-white rounded-3xl p-8 md:p-12 border border-slate-200 flex flex-col md:flex-row items-center gap-12 shadow-md">
                 <div class="w-full md:w-1/2">
-                    <div class="bg-white p-4 rounded-2xl shadow-md border border-slate-100 inline-block mb-6 transform -rotate-3">
-                        <div class="bg-slate-50 border border-slate-200 w-48 h-64 rounded-xl flex flex-col items-center justify-center p-4 text-center">
+                    <div class="bg-slate-50 p-4 rounded-2xl shadow-sm border border-slate-100 inline-block mb-6 transform -rotate-3">
+                        <div class="bg-white border border-slate-200 w-48 h-64 rounded-xl flex flex-col items-center justify-center p-4 text-center">
                             <i data-lucide="brain" class="h-10 w-10 text-indigo-600 mb-3"></i>
                             <p class="text-xs font-bold text-slate-800 mb-1">Asteri Neuro-AI</p>
                             <p class="text-[10px] text-slate-500 mb-4">Technical Overview 2026</p>
@@ -420,67 +379,14 @@
                 <div class="w-full md:w-1/2 text-center md:text-left">
                     <h2 class="text-indigo-600 font-semibold tracking-wide uppercase text-sm mb-3">Research & Validation</h2>
                     <h3 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Dive Deep into the Science</h3>
-                    <p class="text-lg text-slate-600 mb-8">Download our comprehensive clinical overview to see the methodology, dataset breakdowns, and peer-reviewed validation behind our 98.4% diagnostic accuracy.</p>
+                    <p class="text-lg text-slate-600 mb-8">Request our comprehensive clinical overview to see the methodology, dataset breakdowns, and validation (Saliency Maps) behind our diagnostic approach.</p>
                     
                     <form action="https://formspree.io/f/YOUR_FORM_ID_HERE" method="POST" class="flex flex-col sm:flex-row gap-3">
-                        <input type="email" name="email_for_whitepaper" required placeholder="Enter email to receive PDF" class="flex-1 px-5 py-3.5 rounded-xl border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        <input type="email" name="email_for_whitepaper" required placeholder="Enter professional email for PDF" class="flex-1 px-5 py-3.5 rounded-xl border border-slate-300 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                         <button type="submit" class="bg-indigo-600 text-white hover:bg-indigo-700 px-6 py-3.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 whitespace-nowrap shadow-md">
-                            Download <i data-lucide="download" class="h-4 w-4"></i>
+                            Request PDF <i data-lucide="download" class="h-4 w-4"></i>
                         </button>
                     </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section class="py-24 bg-slate-50 border-t border-slate-200" id="faq">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Frequently Asked Questions</h2>
-                <p class="text-lg text-slate-600">Everything you need to know about the technology and process.</p>
-            </div>
-
-            <div class="space-y-4">
-                <!-- FAQ 1 -->
-                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm faq-container">
-                    <button class="faq-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
-                        <span class="font-semibold text-slate-900">How accurate is Asteri Neuro-AI compared to traditional tests?</span>
-                        <i data-lucide="plus" class="faq-icon h-5 w-5 text-slate-400 flex-shrink-0 transition-transform"></i>
-                    </button>
-                    <div class="faq-answer max-h-0 overflow-hidden px-6 text-slate-600 leading-relaxed">
-                        <p class="pb-5">Our AI models have shown up to 98.4% accuracy in detecting early digital biomarkers of cognitive decline, significantly outperforming traditional pen-and-paper assessments like the MoCA or MMSE.</p>
-                    </div>
-                </div>
-                <!-- FAQ 2 -->
-                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm faq-container">
-                    <button class="faq-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
-                        <span class="font-semibold text-slate-900">Does this replace an MRI or CT scan?</span>
-                        <i data-lucide="plus" class="faq-icon h-5 w-5 text-slate-400 flex-shrink-0 transition-transform"></i>
-                    </button>
-                    <div class="faq-answer max-h-0 overflow-hidden px-6 text-slate-600 leading-relaxed">
-                        <p class="pb-5">No. Asteri Neuro is a non-invasive, early-warning pre-screening tool. While structural damage shows up on MRI/CT scans later in the disease progression, our tool detects functional and behavioral changes years earlier, allowing doctors to order scans and interventions proactively.</p>
-                    </div>
-                </div>
-                <!-- FAQ 3 -->
-                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm faq-container">
-                    <button class="faq-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
-                        <span class="font-semibold text-slate-900">Is patient data secure and HIPAA compliant?</span>
-                        <i data-lucide="plus" class="faq-icon h-5 w-5 text-slate-400 flex-shrink-0 transition-transform"></i>
-                    </button>
-                    <div class="faq-answer max-h-0 overflow-hidden px-6 text-slate-600 leading-relaxed">
-                        <p class="pb-5">Absolutely. All voice, motor, and cognitive data is anonymized and encrypted end-to-end. We adhere to the strictest HIPAA and GDPR compliance standards to ensure patient privacy is never compromised.</p>
-                    </div>
-                </div>
-                <!-- FAQ 4 -->
-                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm faq-container">
-                    <button class="faq-btn w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
-                        <span class="font-semibold text-slate-900">How long does the assessment take?</span>
-                        <i data-lucide="plus" class="faq-icon h-5 w-5 text-slate-400 flex-shrink-0 transition-transform"></i>
-                    </button>
-                    <div class="faq-answer max-h-0 overflow-hidden px-6 text-slate-600 leading-relaxed">
-                        <p class="pb-5">The standard digital assessment takes approximately 5 minutes and can be completed on any standard smartphone or tablet, either in the clinic waiting room or from the comfort of the patient's home.</p>
-                    </div>
                 </div>
             </div>
         </div>
@@ -497,15 +403,15 @@
         
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative text-center">
             <div class="bg-white/10 backdrop-blur-lg border border-white/20 p-8 md:p-12 rounded-3xl shadow-2xl">
-                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Get Early Access</h2>
-                <p class="text-indigo-100 text-lg mb-8 max-w-2xl mx-auto">We are currently onboarding select clinics and research partners for our beta program. Join the waitlist to be notified when we open public access.</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Partner in Research</h2>
+                <p class="text-indigo-100 text-lg mb-8 max-w-2xl mx-auto">We are currently onboarding select clinics and research partners for our beta program. Join the waitlist for technical updates and partnership calls.</p>
                 
                 <form action="https://formspree.io/f/YOUR_FORM_ID_HERE" method="POST" class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
-                    <input type="email" name="email" required placeholder="Enter your professional email" class="flex-1 px-5 py-4 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 font-medium" />
+                    <input type="email" name="email" required placeholder="Enter professional email" class="flex-1 px-5 py-4 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 font-medium" />
                     <button type="submit" class="bg-slate-900 text-white hover:bg-slate-800 px-8 py-4 rounded-xl text-lg font-bold transition-all shadow-lg whitespace-nowrap">Join Waitlist</button>
                 </form>
                 <p class="text-indigo-200 text-sm mt-4 flex items-center justify-center gap-2">
-                    <i data-lucide="shield-check" class="h-4 w-4"></i> No spam. Unsubscribe at any time.
+                    <i data-lucide="shield-check" class="h-4 w-4"></i> No spam. Privacy guaranteed.
                 </p>
             </div>
         </div>
@@ -519,8 +425,8 @@
             </div>
             <p class="text-sm">© 2026 Asteri Neuro, Inc. All rights reserved.</p>
             <div class="flex space-x-6 text-sm">
-                <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
-                <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                <a href="https://github.com/Wasup1st/Asteri-Neuro-AI/tree/main" target="_blank" class="hover:text-white transition-colors">GitHub (v2.1 Open-Source Research)</a>
+                <a href="#" class="hover:text-white transition-colors">Privacy</a>
             </div>
         </div>
     </footer>
@@ -586,111 +492,158 @@
             });
         });
 
-        // 4. Hero View Toggle
-        const btnPatient = document.getElementById('btn-patient');
-        const btnClinic = document.getElementById('btn-clinic');
-        const viewPatient = document.getElementById('patient-view');
-        const viewClinic = document.getElementById('clinic-view');
-
-        btnPatient.addEventListener('click', () => {
-            btnPatient.className = "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all bg-indigo-500 text-white shadow-md";
-            btnClinic.className = "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all text-slate-400 hover:text-slate-200";
-            viewPatient.classList.remove('hidden');
-            viewClinic.classList.add('hidden');
-        });
-
-        btnClinic.addEventListener('click', () => {
-            btnClinic.className = "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all bg-indigo-500 text-white shadow-md";
-            btnPatient.className = "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all text-slate-400 hover:text-slate-200";
-            viewClinic.classList.remove('hidden');
-            viewPatient.classList.add('hidden');
-        });
-
-        // 5. Interactive Demo
-        const btnStartDemo = document.getElementById('btn-start-demo');
+        // 5. Interactive 3D-CNN Pipeline Demo Logic
+        const uploadBtnLabel = document.getElementById('btn-start-demo-label');
+        const fileInput = document.getElementById('mri-upload');
         const btnResetDemo = document.getElementById('btn-reset-demo');
-        const statusIndicator = document.getElementById('demo-status-indicator');
-        const audioStatus = document.getElementById('demo-audio-status');
-        const visualizer = document.getElementById('audio-visualizer');
-        const progBar1 = document.getElementById('progress-bar-1');
-        const progVal1 = document.getElementById('progress-val-1');
-        const progBar2 = document.getElementById('progress-bar-2');
-        const progVal2 = document.getElementById('progress-val-2');
-        const results = document.getElementById('demo-results');
+        const statusOverlay = document.getElementById('demo-status-text');
+        const statusSpan = statusOverlay.querySelector('span');
+        const scanLaser = document.getElementById('scan-laser');
+        const placeholderIcon = document.getElementById('demo-placeholder-icon');
+        const uploadedScanImg = document.getElementById('uploaded-brain-scan');
+        
+        const progBarMain = document.getElementById('progress-bar-main');
+        const progValMain = document.getElementById('progress-val-main');
+        const fileNameDisplay = document.getElementById('demo-file-name');
+        const dataStatus = document.getElementById('demo-data-status');
+        const resultsReport = document.getElementById('demo-results-report');
+        const diagnosisText = document.getElementById('demo-diagnosis-text');
+        const riskScoreText = document.getElementById('demo-risk-score');
+        const resultIcon = document.getElementById('result-icon-type');
 
-        // Setup audio bars
-        for(let i=0; i<40; i++) {
-            const bar = document.createElement('div');
-            bar.className = 'w-1.5 bg-indigo-500 rounded-full audio-bar';
-            bar.style.height = '20%';
-            bar.style.animationDelay = `${i * 0.05}s`;
-            visualizer.appendChild(bar);
+        const demoPhases = [
+            { text: "Initializing Scanning Module...", duration: 2000, progStart: 0 },
+            { text: "Uploading MRI & Initial Validation...", duration: 3000, progStart: 10 },
+            { text: "Stripping Skull & Background Noise...", duration: 4000, progStart: 40 },
+            { text: "Executing Strided 3D-CNN... (Research v2.1)", duration: 5000, progStart: 70 },
+            { text: "Generating Saliency Map & Interpretive Report...", duration: 3000, progStart: 90 }
+        ];
+
+        let demoPhaseTimeout;
+
+        // Trigger scan when file is uploaded
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const fakeName = file.name;
+                triggerDemo(fakeName);
+            }
+        });
+
+        function triggerDemo(fileName) {
+            // UI Setup
+            uploadBtnLabel.classList.add('hidden');
+            btnResetDemo.classList.add('hidden');
+            fileNameDisplay.textContent = fileName;
+            dataStatus.classList.remove('hidden');
+            resultsReport.classList.add('hidden');
+            
+            statusOverlay.classList.remove('hidden');
+            placeholderIcon.classList.add('hidden');
+            scanLaser.classList.remove('hidden');
+            uploadedScanImg.classList.add('hidden'); // Hide until 'found'
+
+            // Reset Bars
+            progBarMain.style.width = '0%';
+            progValMain.textContent = '0%';
+
+            executePhase(0);
         }
 
-        let demoInterval;
-        
-        btnStartDemo.addEventListener('click', () => {
-            btnStartDemo.classList.add('hidden');
-            statusIndicator.classList.replace('bg-slate-500', 'bg-green-400');
-            statusIndicator.classList.add('animate-pulse');
-            
-            audioStatus.textContent = 'Processing...';
-            audioStatus.classList.add('text-indigo-400', 'animate-pulse');
-            
-            const bars = document.querySelectorAll('.audio-bar');
-            bars.forEach(bar => bar.classList.add('analyzing-bounce'));
+        function executePhase(phaseIndex) {
+            if (phaseIndex >= demoPhases.length) {
+                completeDemo();
+                return;
+            }
 
-            let progress = 0;
-            demoInterval = setInterval(() => {
-                progress += 1.5;
-                if(progress >= 100) {
-                    clearInterval(demoInterval);
-                    completeDemo();
-                } else {
-                    let p1 = Math.min(100, Math.floor(progress * 1.2));
-                    let p2 = Math.min(100, Math.floor(progress * 0.9));
-                    progBar1.style.width = p1 + '%';
-                    progVal1.textContent = p1 + '%';
-                    progBar2.style.width = p2 + '%';
-                    progVal2.textContent = p2 + '%';
-                }
-            }, 50);
-        });
+            const phase = demoPhases[phaseIndex];
+            statusSpan.textContent = phase.text;
+            progBarMain.style.width = phase.progStart + '%';
+            progValMain.textContent = phase.progStart + '%';
+
+            // Cool Scan Laser Action
+            if (phaseIndex > 0) {
+                 scanLaser.style.transform = `translateY(${50 + (phaseIndex * 15)}%)`;
+                 scanLaser.style.transition = `transform ${phase.duration}ms ease-in-out`;
+            }
+
+            // At middle of the scan (Skull stripping complete), reveal the 'raw scan' image placeholder
+            if (phaseIndex === 2) { 
+                setTimeout(() => {
+                    uploadedScanImg.src = "image_191c1a.png"; // Set Uploaded Brain Image here
+                    uploadedScanImg.style.display = 'block';
+                    uploadedScanImg.classList.remove('hidden'); 
+                    uploadedScanImg.classList.add('opacity-50'); // Keep dim during analysis
+                }, phase.duration / 2);
+            }
+
+            demoPhaseTimeout = setTimeout(() => {
+                executePhase(phaseIndex + 1);
+            }, phase.duration);
+        }
 
         function completeDemo() {
-            progBar1.style.width = '100%';
-            progVal1.textContent = '100%';
-            progBar2.style.width = '100%';
-            progVal2.textContent = '100%';
+            // Full Progress
+            progBarMain.style.width = '100%';
+            progValMain.textContent = '100%';
             
-            audioStatus.textContent = 'Complete';
-            audioStatus.className = 'text-green-400';
-            
-            const bars = document.querySelectorAll('.audio-bar');
-            bars.forEach(bar => {
-                bar.classList.remove('analyzing-bounce');
-                bar.style.height = '20%';
-            });
+            // Clean up Scan visual
+            statusOverlay.classList.add('hidden');
+            scanLaser.classList.add('hidden');
+            uploadedScanImg.classList.remove('opacity-50'); // Fully reveal
 
+            // Report logic (Randomize Risk for Clinician demo)
+            resultsReport.classList.remove('hidden');
             btnResetDemo.classList.remove('hidden');
-            results.classList.remove('hidden');
+
+            const roll = Math.random();
+            if (roll > 0.5) {
+                // High Risk Case (Positive Result)
+                resultIcon.classList.replace('text-cyan-400', 'text-red-400');
+                diagnosisText.textContent = "DEEP STRUCTURE VOLUMETRIC ABNORMALITY detected (Phase 2 analysis). Saliency map confirms primary targeting of the lateral ventricles and caudate nucleus, consistent with early digital biomarkers of cognitive decline (ADv2.1). Immediate Clinical Review Recommended.";
+                riskScoreText.textContent = "High Risk Probability (ADv2.1)";
+                riskScoreText.classList.add('text-red-400');
+                
+                // Set the specific Saliency Map image for the report
+                const resultImg = document.getElementById('demo-saliency-result-img');
+                resultImg.src = "image_191c3b.png";
+                resultImg.style.display = 'block';
+            } else {
+                // Low Risk Case (Negative Result)
+                resultIcon.classList.replace('text-cyan-400', 'text-green-400');
+                diagnosisText.textContent = "No significant volumetric deviations detected across the validated standardAD dataset. (Phase 2 analysis). Cortical density and ventricle trajectory are within normal healthy ranges for the provided age cohort. Routine follow-up screening (12 months) recommended.";
+                riskScoreText.textContent = "Low Risk Probability (ADv2.1)";
+                riskScoreText.classList.add('text-green-400');
+                
+                // Set the specific Saliency Map image for the report
+                const resultImg = document.getElementById('demo-saliency-result-img');
+                resultImg.src = "image_191c3b.png"; 
+                resultImg.style.display = 'block';
+            }
         }
 
         btnResetDemo.addEventListener('click', () => {
+            // Stop any active timer
+            clearTimeout(demoPhaseTimeout);
+
             btnResetDemo.classList.add('hidden');
-            btnStartDemo.classList.remove('hidden');
-            statusIndicator.classList.replace('bg-green-400', 'bg-slate-500');
-            statusIndicator.classList.remove('animate-pulse');
+            uploadBtnLabel.classList.remove('hidden');
+            fileInput.value = ''; // Reset input
+            fileNameDisplay.textContent = 'No File Selected';
+            dataStatus.classList.add('hidden');
+            progBarMain.style.width = '0%';
+            progValMain.textContent = '0%';
+            resultsReport.classList.add('hidden');
             
-            audioStatus.textContent = 'Waiting...';
-            audioStatus.className = '';
+            placeholderIcon.classList.remove('hidden');
+            uploadedScanImg.classList.add('hidden');
+            uploadedScanImg.src = '';
+            uploadedScanImg.style.display = 'none';
             
-            progBar1.style.width = '0%';
-            progVal1.textContent = '0%';
-            progBar2.style.width = '0%';
-            progVal2.textContent = '0%';
-            
-            results.classList.add('hidden');
+            resultIcon.className = "h-8 w-8 text-cyan-400 flex-shrink-0";
+            diagnosisText.textContent = "No data validated.";
+            riskScoreText.textContent = "---";
+            riskScoreText.className = "text-2xl font-mono text-white font-bold";
         });
 
         // 6. FAQ Accordion
