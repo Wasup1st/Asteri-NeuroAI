@@ -57,7 +57,7 @@ clinical_model = None
 async def lifespan(app: FastAPI):
     global clinical_model
     
-    model_url = "https://github.com/Wasup1st/Asteri-Neuro-AI/releases/download/v1.0/asteri_phase8_attention_pet.keras"
+    model_url = "https://github.com/Wasup1st/Asteri-NeuroAI/releases/download/v1.0/asteri_phase8_attention_pet.keras"
     
     if not os.path.exists(WEIGHTS_PATH):
         print("Downloading model from cloud storage...")
