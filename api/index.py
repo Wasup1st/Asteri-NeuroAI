@@ -74,6 +74,15 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Asteri Neuro API", lifespan=lifespan)
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # This allows your Vercel site to talk to Render
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
