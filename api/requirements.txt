@@ -5,3 +5,4 @@ nibabel
 scipy
 numpy
 requests
+python-multipart
