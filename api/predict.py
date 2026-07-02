@@ -115,6 +115,8 @@ def compute_masked_saliency(model, input_tensor):
     return saliency, float(prediction.numpy()[0][0])
 
 # 4. ENDPOINT
+@app.post("/")
+@app.post("/predict")
 @app.post("/api/predict")
 async def predict(file: UploadFile = File(...)):
     try:
