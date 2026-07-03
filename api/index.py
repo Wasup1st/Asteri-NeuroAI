@@ -1,3 +1,4 @@
+import gzip
 import os
 import io
 import numpy as np
@@ -83,7 +84,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_middleware(
+app.add_middlewa
     CORSMiddleware,
     allow_origins=["*"],
     allow_methods=["*"],
@@ -92,19 +93,28 @@ app.add_middleware(
 
 # 3. INFERENCE LOGIC
 def process_raw_bytes(file_bytes):
+    # Detect the gzip magic number and decompress if it is a .nii.gz file
+    if file_bytes.startswith(b'\x1f\x8b'):
+        file_bytes = gzip.decompress(file_bytes)
+        
     file_like = io.BytesIO(file_bytes)
     fh = nib.FileHolder(fileobj=file_like)
     img = nib.Nifti1Image.from_file_map({'header': fh, 'image': fh})
+    
     tensor = img.get_fdata()
     max_val = np.max(tensor)
-    if max_val > 0: tensor = tensor / max_val
+    if max_val > 0: 
+        tensor = tensor / max_val
+        
     mask = tensor > 0.05
     coords = np.array(np.nonzero(mask))
     if coords.size > 0:
         min_c, max_c = coords.min(axis=1), coords.max(axis=1)
         tensor = tensor[min_c[0]:max_c[0], min_c[1]:max_c[1], min_c[2]:max_c[2]]
+        
     zoom_factors = [t/c for t, c in zip((80, 80, 80), tensor.shape)]
     tensor = ndimage.zoom(tensor, zoom_factors, order=1)
+    
     return np.expand_dims(np.expand_dims(tensor, axis=-1), axis=0)
 
 def compute_masked_saliency(model, input_tensor):
