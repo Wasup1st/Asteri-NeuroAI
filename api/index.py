@@ -84,13 +84,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.add_middlewa
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 # 3. INFERENCE LOGIC
 def process_raw_bytes(file_bytes):
     # Detect the gzip magic number and decompress if it is a .nii.gz file
