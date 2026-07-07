@@ -79,11 +79,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # This allows your Vercel site to talk to Render
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # 3. INFERENCE LOGIC
 def process_raw_bytes(file_bytes):
     # Detect the gzip magic number and decompress if it is a .nii.gz file
