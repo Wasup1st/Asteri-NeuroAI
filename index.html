@@ -234,17 +234,37 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start relative">
                         
-                        <div class="w-full h-full relative group">
-                            <div id="scanner-wrapper" class="relative w-full aspect-square border-2 border-slate-700 rounded-3xl overflow-hidden bg-slate-800">
-                                <img id="uploaded-brain-scan" src="" alt="Scan Visualization" class="hidden absolute inset-0 w-full h-full object-cover transition-opacity duration-300" onerror="this.style.display='none'" />
-                                
-                                <div class="absolute inset-0 flex items-center justify-center" id="demo-placeholder-icon">
-                                    <i data-lucide="brain" class="h-16 w-16 text-slate-600"></i>
-                                </div>
-                                
-                                <div id="scan-laser" class="scanning-laser absolute left-0 right-0 h-4 hidden"></div>
-                            </div>
-                        </div>
+                        <!-- Interactive Clinical Viewer -->
+<div class="flex flex-col bg-slate-900 p-6 rounded-2xl border border-slate-800 w-full h-full">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-white font-semibold flex items-center gap-2">
+            <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+            IDA-Style Image Viewer
+        </h3>
+        <span id="slice-indicator" class="text-xs text-slate-400 font-mono bg-slate-800 px-2 py-1 rounded">Slice: 0 / 0</span>
+    </div>
+
+    <!-- Main Image Display -->
+    <div class="bg-black flex items-center justify-center h-96 rounded-xl overflow-hidden relative mb-4 border border-slate-700">
+        <img id="viewer-canvas" src="" alt="Upload a scan to initialize viewer..." class="object-contain h-full hidden" />
+        <p id="viewer-placeholder" class="text-slate-500 text-sm">Awaiting Scan Data...</p>
+    </div>
+
+    <!-- Controls: Slider & Orientation -->
+    <div class="flex flex-col gap-4">
+        <input type="range" id="slice-slider" min="0" max="100" value="0" class="w-full accent-indigo-500 cursor-pointer disabled:opacity-50" disabled />
+        
+        <div class="flex justify-between items-center bg-slate-950 p-2 rounded-lg border border-slate-800">
+            <span class="text-xs text-slate-400 uppercase tracking-wider font-semibold ml-2">Plane</span>
+            <div class="flex gap-2">
+                <button id="btn-axial" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-medium transition-colors">Axial</button>
+                <button id="btn-sagittal" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs font-medium transition-colors">Sagittal</button>
+                <button id="btn-coronal" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs font-medium transition-colors">Coronal</button>
+            </div>
+        </div>
+    </div>
+</div>
 
                         <div class="space-y-6">
                             <div class="flex justify-between items-center bg-slate-800 p-4 rounded-xl border border-slate-700">
