@@ -447,8 +447,9 @@
     </footer>
 
     <script>
-        // Viewer State Variables
+// Viewer State Variables
 let currentSlices = []; 
+let planeData = { axial: [], sagittal: [], coronal: [] };
 let currentPlane = 'axial';
 
 const slider = document.getElementById('slice-slider');
@@ -456,12 +457,38 @@ const viewerCanvas = document.getElementById('viewer-canvas');
 const sliceIndicator = document.getElementById('slice-indicator');
 const placeholder = document.getElementById('viewer-placeholder');
 
+const btnAxial = document.getElementById('btn-axial');
+const btnSagittal = document.getElementById('btn-sagittal');
+const btnCoronal = document.getElementById('btn-coronal');
+
 slider.addEventListener('input', (e) => {
     const index = e.target.value;
     if (currentSlices.length > 0) {
         viewerCanvas.src = `data:image/png;base64,${currentSlices[index]}`;
         sliceIndicator.innerText = `Slice: ${index} / ${currentSlices.length - 1}`;
     }
+});
+
+// Plane switching logic
+function switchPlane(plane) {
+    currentPlane = plane;
+    currentSlices = planeData[plane];
+    if (currentSlices.length > 0) {
+        slider.max = currentSlices.length - 1;
+        slider.value = Math.floor(currentSlices.length / 2);
+        slider.dispatchEvent(new Event('input'));
+    }
+    
+    // Update button styles
+    [btnAxial, btnSagittal, btnCoronal].forEach(b => {
+        b.className = "px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs font-medium transition-colors";
+    });
+    document.getElementById(`btn-${plane}`).className = "px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-medium transition-colors";
+}
+
+btnAxial.addEventListener('click', () => switchPlane('axial'));
+btnSagittal.addEventListener('click', () => switchPlane('sagittal'));
+btnCoronal.addEventListener('click', () => switchPlane('coronal'));
 });
         // 1. Initialize Icons
         lucide.createIcons();
@@ -589,23 +616,19 @@ slider.addEventListener('input', (e) => {
                     // Process successful API response
                     if (result.status === "success") {
                         // --- NEW VIEWER LOGIC ---
-if (result.slices && result.slices.length > 0) {
-    currentSlices = result.slices;
+// Process successful API response
+if (result.status === "success") {
+    if (result.planes) {
+        planeData = result.planes;
+        currentSlices = planeData.axial;
+    } else {
+        currentSlices = result.slices; // fallback
+    }
     
-    // Hide "Awaiting Data" and show the image canvas
     placeholder.classList.add('hidden');
     viewerCanvas.classList.remove('hidden');
-    
-    // Enable and configure the slider
     slider.disabled = false;
-    slider.max = currentSlices.length - 1;
-    
-    // Start the slider right in the middle of the brain
-    slider.value = Math.floor(currentSlices.length / 2); 
-    
-    // Force the slider to update the screen immediately
-    slider.dispatchEvent(new Event('input'));
-}
+    switchPlane('axial'); // initialize with axial view
 // ------------------------
                         const diagnosis = result.metrics.diagnosis;
                         const score = (result.metrics.confidence_score * 100).toFixed(2);
