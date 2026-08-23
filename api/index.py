@@ -129,6 +129,34 @@ def compute_masked_saliency(model, input_tensor):
     saliency = saliency * brain_mask
     return saliency, float(prediction.numpy()[0][0])
 
+def get_axial_slices(volume_data):
+    # Normalize the 3D data to 0-255 (standard image pixels)
+    vol_min, vol_max = volume_data.min(), volume_data.max()
+    if vol_max > vol_min:
+        norm_vol = ((volume_data - vol_min) / (vol_max - vol_min) * 255).astype(np.uint8)
+    else:
+        norm_vol = volume_data.astype(np.uint8)
+
+    slices_b64 = []
+    
+    # Loop through the Z-axis (Axial plane)
+    for i in range(norm_vol.shape[2]):
+        slice_2d = norm_vol[:, :, i]
+        
+        from PIL import Image
+        from io import BytesIO
+        import base64
+        
+        # Convert the raw pixel array into a PNG image in memory
+        img = Image.fromarray(slice_2d)
+        buf = BytesIO()
+        img.save(buf, format="PNG")
+        
+        # Encode as base64 string for the web
+        slices_b64.append(base64.b64encode(buf.getvalue()).decode('utf-8'))
+        
+    return slices_b64
+    
 # 4. ENDPOINT
 @app.post("/")
 @app.post("/predict")
@@ -137,16 +165,19 @@ async def predict(file: UploadFile = File(...)):
     try:
         file_bytes = await file.read()
         processed_tensor = process_raw_bytes(file_bytes)
+        raw_volume = processed_tensor.numpy().squeeze()
+        axial_images = get_axial_slices(raw_volume)
         heatmap, confidence = compute_masked_saliency(clinical_model, processed_tensor)
         return {
-            "status": "success",
-            "metrics": {
-                "diagnosis": "ALZHEIMER'S DISEASE DETECTED" if confidence >= CLINICAL_THRESHOLD else "HEALTHY",
-                "confidence_score": confidence
-            },
-            "visualization": {
-                "heatmap_slice": heatmap[:, :, 40].tolist()
-            }
+        "status": "success",
+        "slices": axial_images,
+        "metrics": {
+            "diagnosis": "ALZHEIMER'S DISEASE DETECTED" if confidence >= CLINICAL_THRESHOLD else "HEALTHY",
+            "confidence_score": float(confidence)
+        },  
+        "visualization": {
+            "heatmap_slice": heatmap[:, :, 40].tolist()
         }
+    }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
