@@ -580,8 +580,6 @@ slider.addEventListener('input', (e) => {
                     
                     // Stop animations
                     statusOverlay.classList.add('hidden');
-                    scanLaser.classList.add('hidden');
-                    scanLaser.classList.remove('laser-animated');
                     uploadedScanImg.classList.remove('opacity-40', 'opacity-70');
                     uploadedScanImg.classList.add('opacity-100');
 
@@ -630,9 +628,7 @@ slider.addEventListener('input', (e) => {
                     progBarMain.classList.replace('bg-indigo-500', 'bg-red-500');
                     statusSpan.textContent = "Connection Failed";
                     
-                    statusOverlay.classList.add('hidden');
-                    scanLaser.classList.add('hidden');
-                    
+                    statusOverlay.classList.add('hidden');                    
                     resultsReport.classList.remove('hidden');
                     btnResetDemo.classList.remove('hidden');
                     
