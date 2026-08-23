@@ -554,23 +554,6 @@ slider.addEventListener('input', (e) => {
                 dataStatus.classList.remove('hidden');
                 resultsReport.classList.add('hidden');
                 statusOverlay.classList.remove('hidden');
-                
-                // Display file if it is an image, otherwise use placeholder
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        uploadedScanImg.src = event.target.result;
-                        uploadedScanImg.style.display = 'block';
-                        uploadedScanImg.classList.remove('hidden', 'opacity-100', 'opacity-70');
-                        uploadedScanImg.classList.add('opacity-40');
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    uploadedScanImg.src = "image_191c1a.png"; // Fallback placeholder
-                    uploadedScanImg.style.display = 'block';
-                    uploadedScanImg.classList.remove('hidden', 'opacity-100', 'opacity-70');
-                    uploadedScanImg.classList.add('opacity-40');
-                }
 
                 // Initial loading bar values
                 progBarMain.style.width = '30%';
