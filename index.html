@@ -613,23 +613,20 @@ btnCoronal.addEventListener('click', () => switchPlane('coronal'));
                     resultsReport.classList.remove('hidden');
                     btnResetDemo.classList.remove('hidden');
 
-                    // Process successful API response
+                // Process successful API response
                     if (result.status === "success") {
-                        // --- NEW VIEWER LOGIC ---
-// Process successful API response
-if (result.status === "success") {
-    if (result.planes) {
-        planeData = result.planes;
-        currentSlices = planeData.axial;
-    } else {
-        currentSlices = result.slices; // fallback
-    }
-    
-    placeholder.classList.add('hidden');
-    viewerCanvas.classList.remove('hidden');
-    slider.disabled = false;
-    switchPlane('axial'); // initialize with axial view
-// ------------------------
+                        if (result.planes) {
+                            planeData = result.planes;
+                            currentSlices = planeData.axial;
+                        } else {
+                            currentSlices = result.slices; // fallback
+                        }
+                        
+                        placeholder.classList.add('hidden');
+                        viewerCanvas.classList.remove('hidden');
+                        slider.disabled = false;
+                        switchPlane('axial'); // initialize with axial view
+
                         const diagnosis = result.metrics.diagnosis;
                         const score = (result.metrics.confidence_score * 100).toFixed(2);
 
@@ -662,7 +659,7 @@ if (result.status === "success") {
                         riskScoreText.textContent = "ERROR";
                     }
 
-                } catch (error) 
+                } catch (error) {
                     // Handle network error
                     console.error("Network Error:", error);
                     progBarMain.style.width = '100%';
