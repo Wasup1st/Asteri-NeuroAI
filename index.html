@@ -588,6 +588,25 @@ slider.addEventListener('input', (e) => {
 
                     // Process successful API response
                     if (result.status === "success") {
+                        // --- NEW VIEWER LOGIC ---
+if (result.slices && result.slices.length > 0) {
+    currentSlices = result.slices;
+    
+    // Hide "Awaiting Data" and show the image canvas
+    placeholder.classList.add('hidden');
+    viewerCanvas.classList.remove('hidden');
+    
+    // Enable and configure the slider
+    slider.disabled = false;
+    slider.max = currentSlices.length - 1;
+    
+    // Start the slider right in the middle of the brain
+    slider.value = Math.floor(currentSlices.length / 2); 
+    
+    // Force the slider to update the screen immediately
+    slider.dispatchEvent(new Event('input'));
+}
+// ------------------------
                         const diagnosis = result.metrics.diagnosis;
                         const score = (result.metrics.confidence_score * 100).toFixed(2);
 
