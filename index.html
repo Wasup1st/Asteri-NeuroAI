@@ -447,6 +447,22 @@
     </footer>
 
     <script>
+        // Viewer State Variables
+let currentSlices = []; 
+let currentPlane = 'axial';
+
+const slider = document.getElementById('slice-slider');
+const viewerCanvas = document.getElementById('viewer-canvas');
+const sliceIndicator = document.getElementById('slice-indicator');
+const placeholder = document.getElementById('viewer-placeholder');
+
+slider.addEventListener('input', (e) => {
+    const index = e.target.value;
+    if (currentSlices.length > 0) {
+        viewerCanvas.src = `data:image/png;base64,${currentSlices[index]}`;
+        sliceIndicator.innerText = `Slice: ${index} / ${currentSlices.length - 1}`;
+    }
+});
         // 1. Initialize Icons
         lucide.createIcons();
 
