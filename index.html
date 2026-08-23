@@ -613,7 +613,7 @@ btnCoronal.addEventListener('click', () => switchPlane('coronal'));
                     resultsReport.classList.remove('hidden');
                     btnResetDemo.classList.remove('hidden');
 
-                // Process successful API response
+               // Process successful API response
                     if (result.status === "success") {
                         if (result.planes) {
                             planeData = result.planes;
@@ -646,7 +646,6 @@ btnCoronal.addEventListener('click', () => switchPlane('coronal'));
                             riskScoreText.className = "text-2xl font-mono text-green-400 font-bold";
                         }
                         
-                        // Set the static Saliency Map image as a visual placeholder
                         const resultImg = document.getElementById('demo-saliency-result-img');
                         resultImg.src = "image_191c3b.png"; 
                         resultImg.style.display = 'block';
@@ -654,7 +653,6 @@ btnCoronal.addEventListener('click', () => switchPlane('coronal'));
                         lucide.createIcons();
 
                     } else {
-                        // Handle backend error message
                         diagnosisText.textContent = "API Error: Failed to process NIfTI data.";
                         riskScoreText.textContent = "ERROR";
                     }
