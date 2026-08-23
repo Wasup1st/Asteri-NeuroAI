@@ -572,6 +572,7 @@ slider.addEventListener('input', (e) => {
                     });
 
                     const result = await response.json();
+                    console.log("BACKEND DATA:", result);
 
                     // Advance progress bar to complete
                     progBarMain.style.width = '100%';
