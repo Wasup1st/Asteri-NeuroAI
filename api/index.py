@@ -129,35 +129,40 @@ def compute_masked_saliency(model, input_tensor):
     saliency = saliency * brain_mask
     return saliency, float(prediction.numpy()[0][0])
 
-def get_axial_slices(volume_data):
-    # Normalize the 3D data to 0-255 (standard image pixels)
+def get_plane_slices(volume_data):
     vol_min, vol_max = volume_data.min(), volume_data.max()
     if vol_max > vol_min:
         norm_vol = ((volume_data - vol_min) / (vol_max - vol_min) * 255).astype(np.uint8)
     else:
         norm_vol = volume_data.astype(np.uint8)
 
-    slices_b64 = []
+    axial_b64 = []
+    sagittal_b64 = []
+    coronal_b64 = []
     
-    # Loop through the Z-axis (Axial plane)
+    # 1. Axial Slices (Z-axis) - Upscaled to 512x512
     for i in range(norm_vol.shape[2]):
-        slice_2d = norm_vol[:, :, i]
-        
-        from PIL import Image
-        from io import BytesIO
-        import base64
-        
-        # Convert the raw pixel array into a PNG image in memory
-        img = Image.fromarray(slice_2d)
+        img = Image.fromarray(norm_vol[:, :, i]).resize((512, 512), Image.Resampling.BICUBIC)
         buf = BytesIO()
         img.save(buf, format="PNG")
+        axial_b64.append(base64.b64encode(buf.getvalue()).decode('utf-8'))
         
-        # Encode as base64 string for the web
-        slices_b64.append(base64.b64encode(buf.getvalue()).decode('utf-8'))
+    # 2. Sagittal Slices (X-axis)
+    for i in range(norm_vol.shape[0]):
+        img = Image.fromarray(norm_vol[i, :, :]).resize((512, 512), Image.Resampling.BICUBIC)
+        buf = BytesIO()
+        img.save(buf, format="PNG")
+        sagittal_b64.append(base64.b64encode(buf.getvalue()).decode('utf-8'))
+
+    # 3. Coronal Slices (Y-axis)
+    for i in range(norm_vol.shape[1]):
+        img = Image.fromarray(norm_vol[:, i, :]).resize((512, 512), Image.Resampling.BICUBIC)
+        buf = BytesIO()
+        img.save(buf, format="PNG")
+        coronal_b64.append(base64.b64encode(buf.getvalue()).decode('utf-8'))
         
-    return slices_b64
+    return axial_b64, sagittal_b64, coronal_b64
     
-# 4. ENDPOINT
 @app.post("/")
 @app.post("/predict")
 @app.post("/api/predict")
@@ -166,19 +171,26 @@ async def predict(file: UploadFile = File(...)):
         file_bytes = await file.read()
         processed_tensor = process_raw_bytes(file_bytes)
         raw_volume = processed_tensor.squeeze()
-        axial_images = get_axial_slices(raw_volume)
+        
+        axial_images, sagittal_images, coronal_images = get_plane_slices(raw_volume)
         heatmap, confidence = compute_masked_saliency(clinical_model, processed_tensor)
+        
         return {
-        "status": "success",
-        "slices": axial_images,
-        "metrics": {
-            "diagnosis": "ALZHEIMER'S DISEASE DETECTED" if confidence >= CLINICAL_THRESHOLD else "HEALTHY",
-            "confidence_score": float(confidence)
-        },  
-        "visualization": {
-            "heatmap_slice": heatmap[:, :, 40].tolist()
+            "status": "success",
+            "slices": axial_images,
+            "planes": {
+                "axial": axial_images,
+                "sagittal": sagittal_images,
+                "coronal": coronal_images
+            },
+            "metrics": {
+                "diagnosis": "ALZHEIMER'S DISEASE DETECTED" if confidence >= CLINICAL_THRESHOLD else "HEALTHY",
+                "confidence_score": float(confidence)
+            },  
+            "visualization": {
+                "heatmap_slice": heatmap[:, :, 40].tolist()
+            }
         }
-    }
     except Exception as e:
         import traceback
         traceback.print_exc()
