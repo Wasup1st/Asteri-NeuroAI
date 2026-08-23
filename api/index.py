@@ -140,25 +140,25 @@ def get_plane_slices(volume_data):
     sagittal_b64 = []
     coronal_b64 = []
     
-    # 1. Axial Slices (Z-axis) - Upscaled to 512x512
+    # 1. Axial Slices (Z-axis)
     for i in range(norm_vol.shape[2]):
         img = Image.fromarray(norm_vol[:, :, i]).resize((512, 512), Image.Resampling.BICUBIC)
         buf = BytesIO()
-        img.save(buf, format="PNG")
+        img.save(buf, format="PNG", optimize=True)
         axial_b64.append(base64.b64encode(buf.getvalue()).decode('utf-8'))
         
     # 2. Sagittal Slices (X-axis)
     for i in range(norm_vol.shape[0]):
         img = Image.fromarray(norm_vol[i, :, :]).resize((512, 512), Image.Resampling.BICUBIC)
         buf = BytesIO()
-        img.save(buf, format="PNG")
+        img.save(buf, format="PNG", optimize=True)
         sagittal_b64.append(base64.b64encode(buf.getvalue()).decode('utf-8'))
 
     # 3. Coronal Slices (Y-axis)
     for i in range(norm_vol.shape[1]):
         img = Image.fromarray(norm_vol[:, i, :]).resize((512, 512), Image.Resampling.BICUBIC)
         buf = BytesIO()
-        img.save(buf, format="PNG")
+        img.save(buf, format="PNG", optimize=True)
         coronal_b64.append(base64.b64encode(buf.getvalue()).decode('utf-8'))
         
     return axial_b64, sagittal_b64, coronal_b64
