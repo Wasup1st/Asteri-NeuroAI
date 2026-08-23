@@ -165,7 +165,7 @@ async def predict(file: UploadFile = File(...)):
     try:
         file_bytes = await file.read()
         processed_tensor = process_raw_bytes(file_bytes)
-        raw_volume = processed_tensor.numpy().squeeze()
+        raw_volume = processed_tensor.squeeze()
         axial_images = get_axial_slices(raw_volume)
         heatmap, confidence = compute_masked_saliency(clinical_model, processed_tensor)
         return {
