@@ -140,26 +140,30 @@ def get_plane_slices(volume_data):
     sagittal_b64 = []
     coronal_b64 = []
     
-    # 1. Axial Slices (Z-axis)
-    for i in range(norm_vol.shape[2]):
-        img = Image.fromarray(norm_vol[:, :, i]).resize((512, 512), Image.Resampling.BICUBIC)
+    # Helper to pad rectangular slices into centered 512x512 squares
+    def pad_to_square(slice_2d):
+        h, w = slice_2d.shape
+        max_dim = max(h, w)
+        padded = np.zeros((max_dim, max_dim), dtype=np.uint8)
+        y_off = (max_dim - h) // 2
+        x_off = (max_dim - w) // 2
+        padded[y_off:y_off+h, x_off:x_off+w] = slice_2d
+        img = Image.fromarray(padded).resize((512, 512), Image.Resampling.BICUBIC)
         buf = BytesIO()
         img.save(buf, format="PNG", optimize=True)
-        axial_b64.append(base64.b64encode(buf.getvalue()).decode('utf-8'))
+        return base64.b64encode(buf.getvalue()).decode('utf-8')
+
+    # 1. Axial Slices (Z-axis)
+    for i in range(norm_vol.shape[2]):
+        axial_b64.append(pad_to_square(norm_vol[:, :, i]))
         
     # 2. Sagittal Slices (X-axis)
     for i in range(norm_vol.shape[0]):
-        img = Image.fromarray(norm_vol[i, :, :]).resize((512, 512), Image.Resampling.BICUBIC)
-        buf = BytesIO()
-        img.save(buf, format="PNG", optimize=True)
-        sagittal_b64.append(base64.b64encode(buf.getvalue()).decode('utf-8'))
+        sagittal_b64.append(pad_to_square(norm_vol[i, :, :]))
 
     # 3. Coronal Slices (Y-axis)
     for i in range(norm_vol.shape[1]):
-        img = Image.fromarray(norm_vol[:, i, :]).resize((512, 512), Image.Resampling.BICUBIC)
-        buf = BytesIO()
-        img.save(buf, format="PNG", optimize=True)
-        coronal_b64.append(base64.b64encode(buf.getvalue()).decode('utf-8'))
+        coronal_b64.append(pad_to_square(norm_vol[:, i, :]))
         
     return axial_b64, sagittal_b64, coronal_b64
     
