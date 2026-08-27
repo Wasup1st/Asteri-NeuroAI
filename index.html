@@ -648,7 +648,7 @@ btnCoronal.addEventListener('click', () => switchPlane('coronal'));
                         
                         const resultImg = document.getElementById('demo-saliency-result-img');
                         // Inject the live Base64 heatmap from the FastAPI response
-                        resultImg.src = "data:image/png;base64," + data.heatmap_base64; 
+                        resultImg.src = "data:image/png;base64," + result.heatmap_base64; 
                         resultImg.style.display = 'block';
                         
                         lucide.createIcons();
