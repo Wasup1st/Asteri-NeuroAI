@@ -297,7 +297,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <img id="demo-saliency-result-img" src="" alt="Saliency Map result" class="w-full h-auto rounded-lg mt-4 border border-slate-700 group-hover:scale-105 transition-transform duration-700" onerror="this.style.display='none'" />
+                                <img id="demo-saliency-result-img" src="" style="display: none;" alt="Saliency Map result" class="w-full h-auto rounded-lg mt-4 border border-slate-700 group-hover:scale-105 transition-transform duration-700" onerror="this.style.display='none'" />
                             </div>
                         </div>
                         
@@ -647,7 +647,8 @@ btnCoronal.addEventListener('click', () => switchPlane('coronal'));
                         }
                         
                         const resultImg = document.getElementById('demo-saliency-result-img');
-                        resultImg.src = "image_191c3b.png"; 
+                        // Inject the live Base64 heatmap from the FastAPI response
+                        resultImg.src = "data:image/png;base64," + data.heatmap_base64; 
                         resultImg.style.display = 'block';
                         
                         lucide.createIcons();
