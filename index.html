@@ -246,9 +246,23 @@
     </div>
 
     <!-- Main Image Display -->
-    <div class="bg-black flex items-center justify-center h-96 rounded-xl overflow-hidden relative mb-4 border border-slate-700">
-        <img id="viewer-canvas" src="" alt="Upload a scan to initialize viewer..." class="object-contain h-full hidden" />
-        <p id="viewer-placeholder" class="text-slate-500 text-sm">Awaiting Scan Data...</p>
+    <div class="bg-black flex items-center justify-center h-96 rounded-xl overflow-hidden relative mb-2 border border-slate-700">
+        <!-- The Raw Brain Scan -->
+        <img id="viewer-canvas" src="" alt="Upload a scan to initialize viewer..." class="object-contain h-full w-full absolute inset-0 hidden z-10" />
+        
+        <!-- The Transparent Multi-Color AI Heatmap Overlay -->
+        <img id="heatmap-canvas" src="" alt="AI Heatmap" class="object-contain h-full w-full absolute inset-0 hidden z-20 opacity-80" />
+        
+        <p id="viewer-placeholder" class="text-slate-500 text-sm absolute z-30">Awaiting Scan Data...</p>
+    </div>
+
+    <!-- Saliency Color Legend -->
+    <div id="heatmap-legend" class="hidden flex-col mb-4 px-2">
+        <div class="h-2 w-full rounded-full bg-gradient-to-r from-blue-500 via-green-400 to-red-500 shadow-inner"></div>
+        <div class="flex justify-between w-full text-[10px] text-slate-400 mt-1 uppercase font-semibold tracking-wider font-mono">
+            <span>Low Target</span>
+            <span>Primary Saliency</span>
+        </div>
     </div>
 
     <!-- Controls: Slider & Orientation -->
@@ -449,11 +463,15 @@
     <script>
 // Viewer State Variables
 let currentSlices = []; 
+let currentHeatmaps = [];
 let planeData = { axial: [], sagittal: [], coronal: [] };
+let heatmapData = { axial: [], sagittal: [], coronal: [] };
 let currentPlane = 'axial';
 
 const slider = document.getElementById('slice-slider');
 const viewerCanvas = document.getElementById('viewer-canvas');
+const heatmapCanvas = document.getElementById('heatmap-canvas');
+const heatmapLegend = document.getElementById('heatmap-legend');
 const sliceIndicator = document.getElementById('slice-indicator');
 const placeholder = document.getElementById('viewer-placeholder');
 
@@ -463,20 +481,27 @@ const btnCoronal = document.getElementById('btn-coronal');
 
 slider.addEventListener('input', (e) => {
     const index = e.target.value;
-    if (currentSlices.length > 0) {
+    // Update raw scan
+    if (currentSlices.length > 0 && currentSlices[index]) {
         viewerCanvas.src = `data:image/png;base64,${currentSlices[index]}`;
         sliceIndicator.innerText = `Slice: ${index} / ${currentSlices.length - 1}`;
+    }
+    // Update synced heatmap overlay
+    if (currentHeatmaps.length > 0 && currentHeatmaps[index]) {
+        heatmapCanvas.src = `data:image/png;base64,${currentHeatmaps[index]}`;
     }
 });
 
 // Plane switching logic
 function switchPlane(plane) {
     currentPlane = plane;
-    currentSlices = planeData[plane];
+    currentSlices = planeData[plane] || [];
+    currentHeatmaps = heatmapData[plane] || [];
+    
     if (currentSlices.length > 0) {
         slider.max = currentSlices.length - 1;
         slider.value = Math.floor(currentSlices.length / 2);
-        slider.dispatchEvent(new Event('input'));
+        slider.dispatchEvent(new Event('input')); // Force UI to update
     }
     
     // Update button styles
@@ -615,15 +640,18 @@ btnCoronal.addEventListener('click', () => switchPlane('coronal'));
 
                // Process successful API response
                     if (result.status === "success") {
-                        if (result.planes) {
-                            planeData = result.planes;
-                            currentSlices = planeData.axial;
-                        } else {
-                            currentSlices = result.slices; // fallback
-                        }
+                        // Map Raw Volumes
+                        if (result.planes) { planeData = result.planes; } 
+                        else { planeData.axial = result.slices; }
                         
+                        // Map AI Heatmap Volumes
+                        if (result.heatmap_planes) { heatmapData = result.heatmap_planes; }
+
                         placeholder.classList.add('hidden');
                         viewerCanvas.classList.remove('hidden');
+                        heatmapCanvas.classList.remove('hidden');
+                        heatmapLegend.classList.remove('hidden');
+                        heatmapLegend.classList.add('flex');
                         slider.disabled = false;
                         switchPlane('axial'); // initialize with axial view
 
