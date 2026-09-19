@@ -695,9 +695,21 @@ btnCoronal.addEventListener('click', () => switchPlane('coronal'));
                         }
                         
                         const resultImg = document.getElementById('demo-saliency-result-img');
-                        // Inject the live Base64 heatmap from the FastAPI response
-                        resultImg.src = "data:image/png;base64," + result.heatmap_base64; 
-                        resultImg.style.display = 'block';
+
+// Try to use the dedicated single image first (if the backend sends it)
+if (result.heatmap_base64) {
+    resultImg.src = "data:image/png;base64," + result.heatmap_base64;
+    resultImg.style.display = 'block';
+} 
+// If it isn't there, fall back to extracting the middle slice from the 3D version
+else {
+    const axialArray = result.heatmap_planes ? result.heatmap_planes.axial : heatmapData.axial;
+    if (axialArray && axialArray.length > 0) {
+        const middleIndex = Math.floor(axialArray.length / 2);
+        resultImg.src = "data:image/png;base64," + axialArray[middleIndex]; 
+        resultImg.style.display = 'block';
+    }
+}
                         
                         lucide.createIcons();
 
